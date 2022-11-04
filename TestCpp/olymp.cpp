@@ -1,31 +1,32 @@
 ﻿#include <iostream>
+#include <stdio.h>
+#include <map>
 using namespace std;
-int main()
-{
-	int n;
-	cin >> n;
-	if (n < 4) cout << "0";
-	else if (n == 4) cout << 2 << endl << 1 << " " << 3 << endl << 2 << " " << 4;
-	else if (n == 6)
+int main(){
+	int build, road, home, school;
+	scanf_s("%d %d", &build, &road);
+	scanf_s("%d %d", &home, &school);
+	map <pair<int, int>, int> mapa;
+	if (build > 0 && road > 0 && home > 0 && school > 0)
 	{
-		cout << "3 1" << endl << "3 5" << endl << "3 6" << endl << "1 5";
-	}
-	else
-	{
-		int startpoint = n - 1, endpoint = 1;
-		cout << n - 3 << endl;
-		for (int i = 0; i != n - 3; i++)
+
+		int house1, house2, distance, ansr_distance, ansr_houses;
+		for (int i = 0; i != road; i++)
 		{
-			cout << startpoint << " " << endpoint << endl;
-			if ((startpoint + endpoint) % 2 == 0)
+			scanf_s("%d %d %d", &house1, &house2, &distance);
+			pair<int, int> b;
+			b = make_pair(house1, house2);
+			mapa.insert(pair<pair<int, int>, int>(b, distance));
+		}	
+		cout << endl;
+		for (auto i = mapa.begin(); i != mapa.end(); i++)
+		{
+			if (i->first.first == 0)
 			{
-				startpoint -= 1;
-			}
-			else
-			{
-				endpoint += 1;
+				
 			}
 		}
+
 	}
 }
 	
