@@ -53,12 +53,12 @@ int main()
 	cin >> houses >> roads; //кол-во домов и дорог
 	cin >> first >> last; //начало и конец маршрута
 
-	vector<vector<int>> Matrix(last); //матрица смежности
+	vector<vector<int>> Matrix(houses); //матрица смежности
 	vector<vector<int>> TempPaths; //неоконченные пути
 	vector<vector<int>> Paths; //завершенные пути
 
-	for (int i = 0; i < last; i++) //создание матрицы
-		for (int j = 0; j < last; j++)
+	for (int i = 0; i < houses; i++) //создание матрицы
+		for (int j = 0; j < houses; j++)
 			Matrix[i].push_back(0);
 
 	for (int i = 0; i < roads; i++) //вводимые значения
@@ -112,6 +112,7 @@ int main()
 		{
 			if (ShortestPaths[i].size() == maxlength)
 			{
+				cout << ShortestPaths[i][0] << endl;
 				for (int j = 2; j < ShortestPaths[i].size() - 1; j++)
 				{
 					cout << ShortestPaths[i][j] << " ";
