@@ -37,9 +37,8 @@ int main()
 	int first, last, roads, houses; //переменные исходной и конечной точки, количества дорог и точек
 	cin >> houses >> roads >> first >> last; //ввод значений
 
-	vector<vector<int>> Matrix(houses); //матрица смежности
-	vector<vector<int>> TempPaths; //неоконченные пути
-	vector<vector<int>> Paths; //завершенные пути
+	vector<vector<int>> 
+		Matrix(houses), TempPaths, Paths, ShortestPaths; //матрица смежности, неоконченные, завершенные, кратчайшие пути
 
 	for (int i = 0; i < houses; i++) //создание матрицы смежности
 		for (int j = 0; j < houses; j++)
@@ -83,7 +82,6 @@ int main()
 	for (int i = 0; i < Paths.size(); i++) //поиск минимальной длины пути
 		if (Paths[i][0] < min) min = Paths[i][0]; 
 
-	vector<vector<int>> ShortestPaths;
 	for (int i = 0; i < Paths.size(); i++) //создание массива кратчайших путей
 		if (Paths[i][0] == min)
 			ShortestPaths.push_back(Paths[i]);
