@@ -14,9 +14,7 @@ bool unsigned_dots(vector<vector<int>> Matrix) //проверка на нали�
 bool unique(vector<int> alpha, int value) //проверка на уникальность значения
 {
 	for (int i = 1; i < alpha.size(); i++)
-	{
 		if (alpha[i] == value) return false;
-	}
 	return true;
 }
 vector<vector<int>> MakinNewPaths(vector<vector<int>> Mat, vector<int> CurPath, int fir) //создание последующих точек в путях
@@ -34,20 +32,10 @@ vector<vector<int>> MakinNewPaths(vector<vector<int>> Mat, vector<int> CurPath, 
 	}
 	return Path;
 }
-vector<vector<int>> CountPathsCheck(vector<vector<int>> Mat, int fir) //создание первых путей
-{
-	vector<vector<int>> Path;
-	for (int i = 0; i < Mat.size(); i++)
-		if (Mat[fir - 1][i])
-			Path.push_back({ Mat[fir - 1][i], fir, i + 1});
-	return Path;
-}
 int main()
 {
-	int first, last, roads, houses;
-
-	cin >> houses >> roads; //кол-во домов и дорог
-	cin >> first >> last; //начало и конец маршрута
+	int first, last, roads, houses; //переменные исходной и конечной точки, количества дорог и точек
+	cin >> houses >> roads >> first >> last; //ввод значений
 
 	vector<vector<int>> Matrix(houses); //матрица смежности
 	vector<vector<int>> TempPaths; //неоконченные пути
@@ -59,14 +47,14 @@ int main()
 
 	for (int i = 0; i < roads; i++) //вводимые значения
 	{
-		int h1, h2, distance;
-		cin >> h1 >> h2 >> distance;
-		Matrix[h1 - 1][h2 - 1] = distance;
-		Matrix[h2 - 1][h1 - 1] = distance;
+		int h1, h2, distance; //переменные начальной и конечной точки пути + длина пути
+		cin >> h1 >> h2 >> distance; //ввод значений 
+		Matrix[h1 - 1][h2 - 1] = distance; //запись введенных значений в матрицу смежности
+		Matrix[h2 - 1][h1 - 1] = distance; //зеркальная запись в нижнюю часть
 	}
 
 	if (unsigned_dots(Matrix)) return 1; //проверка на изолированные вершины. если есть программа обрывается
-	TempPaths = CountPathsCheck(Matrix, first); // присвоение первых путей
+	TempPaths.push_back({0 , first}); //создание первого пути с нулевым расстоянием и стартовой точкой
 	for (int i = 0; i < TempPaths.size(); i++)//цикл создания путей
 	{
 		for (int seven = 0; seven < roads; seven++)//цикл с максимальной длиной пути если возможно
