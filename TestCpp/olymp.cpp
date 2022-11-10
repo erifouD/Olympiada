@@ -1,92 +1,122 @@
 ﻿#include <iostream>
-#include <stdio.h>
 #include <vector>
 using namespace std;
+bool unsigned_dots(vector<vector<int>> Matrix)
+{
+	for (int i = 0; i != Matrix.size(); i++)
+		for (int j = 0; j != Matrix.size(); j++)
+		{
+			if (Matrix[i][j]) break;
+			else if (j == Matrix.size() - 1) return true;
+		}
+	return false;
+}
+bool unique(vector<int> alpha, int value) //проверка на уникальность значения
+{
+	for (int i = 1; i < alpha.size(); i++)
+	{
+		if (alpha[i] == value) return false;
+	}
+	return true;
+}
+vector<vector<int>> MakinNewPaths(vector<vector<int>> Mat, vector<int> CurPath, int fir) //создание последующих
+{
+	vector<vector<int>> Path;
+	for (int i = 0; i < Mat.size(); i++)
+	{
+		vector<int> FuncPath = CurPath;
+		if (Mat[fir - 1][i] && unique(CurPath, i + 1))
+		{
+			FuncPath.push_back(i + 1);
+			FuncPath.front() += Mat[fir - 1][i];
+			Path.push_back(FuncPath);
+		}
+	}
+	return Path;
+}
+vector<vector<int>> CountPathsCheck(vector<vector<int>> Mat, int fir) //создание первых путей
+{
+	vector<vector<int>> Path;
+	for (int i = 0; i < Mat.size(); i++)
+	{
+		if (Mat[fir - 1][i])
+		{
+			Path.push_back({ Mat[fir - 1][i], fir, i + 1});
+		}
+	}
+	return Path;
+}
 int main()
 {
-	int build, road, home, school;
-	scanf_s("%d %d", &build, &road);
-	scanf_s("%d %d", &home, &school);
-	if (build > 0 && road > 0 && home > 0 && school > 0)
+	int first, last, roads, houses;
+
+	cin >> houses >> roads; //кол-во домов и дорог
+	cin >> first >> last; //начало и конец маршрута
+
+	vector<vector<int>> Matrix(last); //матрица смежности
+	vector<vector<int>> TempPaths; //неоконченные пути
+	vector<vector<int>> Paths; //завершенные пути
+
+	for (int i = 0; i < last; i++) //создание матрицы
+		for (int j = 0; j < last; j++)
+			Matrix[i].push_back(0);
+
+	for (int i = 0; i < roads; i++) //вводимые значения
 	{
-		vector<vector<int>> Matrix(build);
-		vector<vector<int>> Paths;
-		vector<vector<int>> CompPaths;
-		vector<vector<int>> ShortestPaths;
-		vector<int> Answer;
-		int buffer;
-		for (int i = 0; i != build; i++)
-			for (int j = 0; j != build; j++)
-			{
-				Matrix[i].push_back(0);
-			}
-
-
-		int house1, house2, distance, ansr_distance = 0, ansr_houses = 0;
-		for (int i = 0; i != road; i++)
-		{
-			scanf_s("%d %d %d", &house1, &house2, &distance);
-			Matrix[house1 - 1][house2 - 1] = distance;
-		}
-		int next_index = home, temp_distance, pathnum = 0;
-		while (next_index != build)
-		{
-			for (int j = 0; j != build; j++)
-			{
-				if (Matrix[next_index - 1][j])
-				{
-					if (next_index == 1)
-					{
-						vector<int> TempVector;
-						TempVector.push_back(Matrix[next_index - 1][j]); //расстояние
-						TempVector.push_back(next_index);          //начальная точка
-						TempVector.push_back(j + 1); //конечная точка
-						Paths.push_back(TempVector);
-						pathnum++;
-					}
-					else
-					{
-						for (int k = 0; k != Paths.size(); k++)
-						{
-							if (Paths[k].back() == next_index)
-							{
-								for(int l = 1; l != Paths.size(); l++)
-								Paths.push_back(Paths[k]); //создание нового пути на основе старого
-								Paths.back().push_back(j + 1); //добавление конечной точки
-								Paths.back().front() += Matrix[next_index - 1][j]; //добавление расстояния
-								pathnum++;
-							}
-						}
-					}			
-				}
-			}			
-			next_index++;
-		}
-		for (int i = 0; i != Paths.size(); i++)
-			if (Paths[i].back() == school)
-				CompPaths.push_back(Paths[i]); //создание массива полных маршрутов
-
-		int minsize = CompPaths[0].front();
-
-		for (int i = 0; i != CompPaths.size(); i++)
-			if (CompPaths[i].front() < minsize)
-				minsize = CompPaths[0].front(); //нахождение минимальной длины маршрута
-
-		for (int i = 0; i != CompPaths.size(); i++)
-			if (CompPaths[i].front() == minsize)
-				ShortestPaths.push_back(CompPaths[i]); //запись в финальный массив маршрутов
-
-		int maxsize = 0;
-		for (int i = 0; i != ShortestPaths.size(); i++)
-			if (ShortestPaths[i].size() > maxsize)
-				maxsize = ShortestPaths[i].size(); // нахождение самого длинного пути
-
-		for (int i = 0; i != ShortestPaths.size(); i++)
-			if (ShortestPaths[i].size() == maxsize)
-				Answer = ShortestPaths[i];
-		cout << Answer.front() << endl << Answer.size() - 3 << endl;
-		for (int i = 2; i != Answer.size() - 1; i++)
-			cout << Answer[i] << " ";
-		
+		int h1, h2, distance;
+		cin >> h1 >> h2 >> distance;
+		Matrix[h1 - 1][h2 - 1] = distance;
+		Matrix[h2 - 1][h1 - 1] = distance;
 	}
+
+	if (unsigned_dots(Matrix)) return 1; //проверка на неподведенные точки
+	TempPaths = CountPathsCheck(Matrix, first); // присвоение первых путей
+
+		for (int i = 0; i < TempPaths.size(); i++)//цикл создания путей
+		{
+			for (int seven = 0; seven < roads; seven++)//цикл с максимальной длиной пути если возможно
+			{
+				for (int give = 0; give < houses; give++) //цикл присвоение следующей конечной точки
+				{
+					if (Matrix[TempPaths[i].back() - 1][give] && unique(TempPaths[i], give + 1) && TempPaths[i].back() != last) //если валидно значение в матрице смежности 1- конечная точка в пути + след. конечная точка и такой точки не было
+					{
+						vector<vector<int>> Iter = MakinNewPaths(Matrix, TempPaths[i], TempPaths[i].back()); //временный вектор путей
+						TempPaths.erase(TempPaths.begin() + i); //удалить вектор, так как он будет множиться
+						for (int j = 0; j < Iter.size(); j++) //запись новых путей в вектор
+							TempPaths.push_back(Iter[j]);
+						i = 0;
+						break;
+					}
+				}
+			}
+			
+		}
+		for (int i = 0; i < TempPaths.size(); i++)
+			if (TempPaths[i].back() == last)
+				Paths.push_back(TempPaths[i]);
+
+		int min = Paths[0][0];
+		for (int i = 0; i < Paths.size(); i++)
+			if (Paths[i][0] < min) min = Paths[i][0];
+
+		vector<vector<int>> ShortestPaths;
+		for (int i = 0; i < Paths.size(); i++)
+			if (Paths[i][0] == min)
+				ShortestPaths.push_back(Paths[i]);
+
+		int maxlength = ShortestPaths[0].size();
+		for (int i = 0; i < ShortestPaths.size(); i++)
+			if (ShortestPaths[i].size() > maxlength) maxlength = ShortestPaths[i].size();
+
+		for (int i = 0; i < ShortestPaths.size(); i++)
+		{
+			if (ShortestPaths[i].size() == maxlength)
+			{
+				for (int j = 2; j < ShortestPaths[i].size() - 1; j++)
+				{
+					cout << ShortestPaths[i][j] << " ";
+				}
+				return 0;
+			}
+		}
 }
